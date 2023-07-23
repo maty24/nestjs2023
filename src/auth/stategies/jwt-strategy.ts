@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-
+//cunado pase una ruta va a pasar por equi cuando se autentica por una ruta
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -26,9 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   //estoy tipando el payload
   async validate(payload: JwtPayload): Promise<Auth> {
     //saco el email del payload, que es del jwt
-    const { email } = payload;
+    const { id } = payload;
 
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) throw new UnauthorizedException('Token not valid');
 

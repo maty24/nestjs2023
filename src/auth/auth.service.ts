@@ -36,7 +36,7 @@ export class AuthService {
       return {
         ...user,
         //le tengo que enviar un objeto con el email
-        token: this.getJwtToken({ email: user.email }),
+        token: this.getJwtToken({ id: user.id }),
       };
     } catch (error) {
       this.handleDBErrors(error);
@@ -48,7 +48,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email },
       //cuando tenga el usuario quiero que me retorne esto nomas, el email y el password
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
     //si no encuntra el usuario
     if (!user) throw new UnauthorizedException('Credenciales incorrectas');
@@ -59,7 +59,7 @@ export class AuthService {
     return {
       ...user,
       //le tengo que enviar un objeto con el email
-      token: this.getJwtToken({ email: user.email }),
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 

@@ -15,8 +15,9 @@ import { CreateAuthDto, LoginUserDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './entities/auth.entity';
-import { GetUser, RawHeaders } from './decorators';
+import { GetUser, RawHeaders, RoleProtected ,AuthD} from './decorators';
 import { UserRoleGuard } from './guards/user-role.guard';
+import { validroles } from './interfaces/valid-roles';
 
 @Controller('auth')
 export class AuthController {
@@ -53,13 +54,24 @@ export class AuthController {
   }
 
   @Get('private2')
-
+  //le digo los roles que estan permitos para hacer lapeticon de esta ruta
+  @RoleProtected(validroles.admin, validroles.superUser, validroles.user)
   //el metadata para andir informacion extra al controlador
-  @SetMetadata('roles', ['admin', 'super-user'])
+  //@SetMetadata('roles', ['admin', 'super-user'])
 
-  //le encio el guard , si me retorna un false , no me va a dejar pasar
+  //le encio el guard , si me retorna un false , no me va a dejar pasar, el useguar me va a verificar el rol
   @UseGuards(AuthGuard(), UserRoleGuard)
   privateRute2(@GetUser() user: Auth) {
+    return {
+      ok: true,
+      user,
+    };
+  }
+
+  @Get('private3')
+  //el decortor contiene toda la lagica para segurizar la api
+  @AuthD()
+  privateRute3(@GetUser() user: Auth) {
     return {
       ok: true,
       user,
